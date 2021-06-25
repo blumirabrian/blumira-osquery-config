@@ -149,8 +149,50 @@ sudo systemctl restart rsyslog.service
 
 ## Auto Deploy Niceness
 
+TEMP=`getopt -o s:h:: --long results:,list,query,help:: -- "$@"`
+
 while true; do
   case "$1" in
+	-s|--server)
+		SENSOR_IP=$2; shift 2;;
+	-d|--distro)
+		DIST=$2; shift 2
+		if [ $(echo $DIST | grep ubuntu| wc -m) -gt 0 ]; then
+			dist_test_u
+			## Osquery
+			config_osquery
+			## Syslog
+			syslog_config
+			blumira_syslog_check
+			exit 0
+		else
+			if [ $(echo $DIST | grep rhel| wc -m) -gt 0 ]; then
+				dist_test_r
+				## Osquery
+				config_osquery
+				## Syslog
+				syslog_config
+				blumira_syslog_check
+				exit 0
+			else
+				echo
+			fi
+		else
+			if [ $(echo $DIST | grep centos| wc -m) -gt 0 ]; then
+				dist_test_c
+				## Osquery
+				config_osquery
+				## Syslog
+				syslog_config
+				blumira_syslog_check
+				exit 0
+			else
+				echo "No Supported Distro's Found"
+			fi
+		fi
+		exit 0;;
+
+
 	-h|--help)
 		echo "Blumira Osquery Deploy Script"
 	exit 0;;
