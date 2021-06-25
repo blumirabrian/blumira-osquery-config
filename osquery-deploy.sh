@@ -13,6 +13,11 @@ if [ $(echo $DIST | grep ubuntu| wc -m) -gt 0 ]; then
 	sudo add-apt-repository 'deb [arch=amd64] https://pkg.osquery.io/deb deb main'
 	sudo apt-get update
 	sudo apt-get install osquery
+	if [ $(systemctl status auditd | grep running | wc -m) -gt 0 ]; then
+		echo "Warning Auditd is running, you will need to disable for Osquery to be able to track Process Events."
+	else
+	fi
+
 else
 	echo "Not Ubuntu"
 fi
@@ -25,6 +30,10 @@ if [ $(echo $DIST | grep rhel| wc -m) -gt 0 ]; then
 	sudo yum-config-manager --add-repo https://pkg.osquery.io/rpm/osquery-s3-rpm.repo
 	sudo yum-config-manager --enable osquery-s3-rpm-repo
 	sudo yum -y install osquery
+	if [ $(systemctl status auditd | grep running | wc -m) -gt 0 ]; then
+		echo "Warning Auditd is running, you will need to disable for Osquery to be able to track Process Events."
+	else
+	fi
 else
 	echo "Not Red Hat"
 fi
@@ -37,6 +46,11 @@ if [ $(echo $DIST | grep centos| wc -m) -gt 0 ]; then
 	sudo yum-config-manager --add-repo https://pkg.osquery.io/rpm/osquery-s3-rpm.repo
 	sudo yum-config-manager --enable osquery-s3-rpm-repo
 	sudo yum -y install osquery
+	if [ $(systemctl status auditd | grep running | wc -m) -gt 0 ]; then
+		echo "Warning Auditd is running, you will need to disable for Osquery to be able to track Process Events."
+	else
+	fi
+
 else
 	echo "Not CentOS"
 fi
