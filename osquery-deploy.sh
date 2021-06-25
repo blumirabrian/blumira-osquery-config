@@ -16,6 +16,7 @@ if [ $(echo $DIST | grep ubuntu| wc -m) -gt 0 ]; then
 	if [ $(systemctl status auditd | grep running | wc -m) -gt 0 ]; then
 		echo "Warning Auditd is running, you will need to disable for Osquery to be able to track Process Events."
 	else
+		echo
 	fi
 
 else
@@ -33,6 +34,7 @@ if [ $(echo $DIST | grep rhel| wc -m) -gt 0 ]; then
 	if [ $(systemctl status auditd | grep running | wc -m) -gt 0 ]; then
 		echo "Warning Auditd is running, you will need to disable for Osquery to be able to track Process Events."
 	else
+		echo
 	fi
 else
 	echo "Not Red Hat"
@@ -49,6 +51,7 @@ if [ $(echo $DIST | grep centos| wc -m) -gt 0 ]; then
 	if [ $(systemctl status auditd | grep running | wc -m) -gt 0 ]; then
 		echo "Warning Auditd is running, you will need to disable for Osquery to be able to track Process Events."
 	else
+		echo
 	fi
 
 else
@@ -144,6 +147,18 @@ sudo systemctl restart rsyslog.service
 
 ### Main ###
 
+## Auto Deploy Niceness
+
+while true; do
+  case "$1" in
+	-h|--help)
+		echo "Blumira Osquery Deploy Script"
+	exit 0;;
+	*)
+	exit 0;;
+esac
+done
+
 ## Find Dist
 
 dist_test_u
@@ -152,7 +167,11 @@ dist_test_r
 
 dist_test_c
 
+## Osquery
+
 config_osquery
+
+## Syslog
 
 syslog_config
 
