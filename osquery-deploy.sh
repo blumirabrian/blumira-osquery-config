@@ -30,6 +30,19 @@ else
 fi
 }
 
+dist_test_c(){
+if [ $(echo $DIST | grep centos| wc -m) -gt 0 ]; then
+	echo "CentOS Distribution Found"
+	curl -L https://pkg.osquery.io/rpm/GPG | sudo tee /etc/pki/rpm-gpg/RPM-GPG-KEY-osquery
+	sudo yum-config-manager --add-repo https://pkg.osquery.io/rpm/osquery-s3-rpm.repo
+	sudo yum-config-manager --enable osquery-s3-rpm-repo
+	sudo yum -y install osquery
+else
+	echo "Not CentOS"
+fi
+}
+
+
 config_osquery(){
 git clone https://github.com/palantir/osquery-configuration.git
 sudo cp -av osquery-configuration/Classic/Servers/Linux/* /etc/osquery/
@@ -122,6 +135,8 @@ sudo systemctl restart rsyslog.service
 dist_test_u
 
 dist_test_r
+
+dist_test_c
 
 config_osquery
 
