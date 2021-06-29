@@ -145,6 +145,14 @@ sudo systemctl restart rsyslog.service
 
 }
 
+help_menu(){
+echo -e "\n===== Blumira Osquery Deployment Utility =====\n"
+echo -e "   -h --help see this help menu\n"
+echo -e "   -d --distro provide the linux distro to deploy osquery on (supported options: ubuntu|rhel|centos)\n"
+echo -e "   -s --server provide the server IP of the Blumira sensor to send syslog forwarding to\n"
+echo -e "\n"
+}
+
 ### Main ###
 
 ## Auto Deploy Niceness
@@ -165,8 +173,7 @@ while true; do
 			syslog_config
 			blumira_syslog_check
 			exit 0
-		else
-			if [ $(echo $DIST | grep rhel| wc -m) -gt 0 ]; then
+		elif [ $(echo $DIST | grep rhel| wc -m) -gt 0 ]; then
 				dist_test_r
 				## Osquery
 				config_osquery
@@ -174,11 +181,7 @@ while true; do
 				syslog_config
 				blumira_syslog_check
 				exit 0
-			else
-				echo
-			fi
-		else
-			if [ $(echo $DIST | grep centos| wc -m) -gt 0 ]; then
+		elif [ $(echo $DIST | grep centos| wc -m) -gt 0 ]; then
 				dist_test_c
 				## Osquery
 				config_osquery
@@ -186,15 +189,15 @@ while true; do
 				syslog_config
 				blumira_syslog_check
 				exit 0
-			else
+		else
 				echo "No Supported Distro's Found"
-			fi
 		fi
+
 		exit 0;;
 
 
 	-h|--help)
-		echo "Blumira Osquery Deploy Script"
+		help_menu
 	exit 0;;
 	*)
 	exit 0;;
