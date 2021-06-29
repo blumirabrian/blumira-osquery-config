@@ -157,7 +157,7 @@ echo -e "\n"
 
 ## Auto Deploy Niceness
 
-TEMP=`getopt -o s:d:h:: --long results:,list,query,help:: -- "$@"`
+TEMP=`getopt -o s:d:h:: --long server:,distro:,help:: -- "$@"`
 
 while true; do
   case "$1" in
