@@ -8,7 +8,7 @@ have_git(){
 	if [ $(which git| wc -m) -gt 0 ]; then
 		echo "git found"
 	else
-		echo -e "\n Error \nGit required to complete automated installation.\nPlease install Git and try again.\n"
+		echo -e "\nError \n\nGit required to complete automated installation.\n\nPlease install Git and try again.\n"
 		exit 0
 	fi
 }
