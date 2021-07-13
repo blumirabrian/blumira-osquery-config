@@ -4,6 +4,15 @@ SENSOR_IP=""
 
 DIST=$(. /etc/os-release && echo "$ID"| tr '[:upper:]' '[:lower:]')
 
+have_git(){
+	if [ $(which git| wc -m) -gt 0 ]; then
+		echo "git found"
+	else
+		echo -e "Git required to complete automated installation."
+		exit 0
+	fi
+}
+
 dist_test_u(){
 if [ $(echo $DIST | grep ubuntu| wc -m) -gt 0 ]; then
 	echo "Ubuntu Distribution Found"
@@ -166,6 +175,7 @@ while true; do
 	-d|--distro)
 		DIST=$2; shift 2
 		if [ $(echo $DIST | grep ubuntu| wc -m) -gt 0 ]; then
+			have_git
 			dist_test_u
 			## Osquery
 			config_osquery
@@ -174,6 +184,7 @@ while true; do
 			blumira_syslog_check
 			exit 0
 		elif [ $(echo $DIST | grep rhel| wc -m) -gt 0 ]; then
+				have_git
 				dist_test_r
 				## Osquery
 				config_osquery
@@ -182,6 +193,7 @@ while true; do
 				blumira_syslog_check
 				exit 0
 		elif [ $(echo $DIST | grep centos| wc -m) -gt 0 ]; then
+				have_git
 				dist_test_c
 				## Osquery
 				config_osquery
@@ -205,6 +217,7 @@ esac
 done
 
 ## Find Dist
+have_git
 
 dist_test_u
 
