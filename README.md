@@ -2,7 +2,9 @@
 Script to ease osquery deplyment with Blumira
 
 Requirements:
+
 git installed
+
 auditd disabled
 
 ```
@@ -18,6 +20,6 @@ auditd disabled
 ```
 
 Example:
-
+```
 osquery-deploy.sh -d ubuntu -s 172.16.1.100
-
+```
