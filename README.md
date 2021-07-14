@@ -21,5 +21,5 @@ auditd disabled
 
 Example:
 ```
-osquery-deploy.sh -d ubuntu -s 172.16.1.100
+sudo osquery-deploy.sh -d ubuntu -s 172.16.1.100
 ```
