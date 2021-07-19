@@ -148,7 +148,7 @@ EOF
 syslog_config(){
    
 syslog_content > /etc/rsyslog.d/osquery.conf
-
+sleep 5
 sudo chown syslog. /var/log/osquery/osqueryd.results.log
 sudo systemctl restart rsyslog.service
 
