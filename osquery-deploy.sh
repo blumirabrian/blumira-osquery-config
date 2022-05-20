@@ -1,6 +1,7 @@
 #!/bin/bash
 
 SENSOR_IP=""
+INSTALL_LOG=/tmp/blumira-osquery-install.log
 
 DIST=$(. /etc/os-release && echo "$ID"| tr '[:upper:]' '[:lower:]')
 
@@ -12,6 +13,17 @@ have_git(){
 		exit 0
 	fi
 }
+
+rsyslog_perms_check(){
+        if [ $(ps fauwx | grep rsyslog | grep -v grep | awk '{print$1}') = "root" ];then
+                echo "syslog has root permissions proceeding with configuration"
+        else
+                echo -e "\nsyslog running as lower privileged user, you will need to change permissions or osquery log won't be accessable to rsyslog"
+                echo -e '\ncomment out the lines\n\n$PrivDropToUser syslog \n$PrivDropToGroup syslog\n\nin /etc/rsyslog.conf'
+                exit 0
+        fi
+}
+
 
 dist_test_u(){
 if [ $(echo $DIST | grep ubuntu| wc -m) -gt 0 ]; then
@@ -68,11 +80,14 @@ else
 fi
 }
 
-
 config_osquery(){
 git clone https://github.com/palantir/osquery-configuration.git
 sudo cp -av osquery-configuration/Classic/Servers/Linux/* /etc/osquery/
 sudo chown -R root. /etc/osquery/
+
+echo "--logger_rotate=true" >> /etc/osquery/osquery.flags
+echo "--logger_rotate_size=52428800" >> /etc/osquery/osquery.flags
+echo "--logger_rotate_max_files=3" >> /etc/osquery/osquery.flags
 
 sudo systemctl enable osqueryd.service
 sudo systemctl start osqueryd.service
@@ -175,8 +190,9 @@ while true; do
 	-d|--distro)
 		DIST=$2; shift 2
 		if [ $(echo $DIST | grep ubuntu| wc -m) -gt 0 ]; then
-			have_git
-			dist_test_u
+			have_git | tee -a $INSTALL_LOG
+			rsyslog_perms_check | tee -a $INSTALL_LOG
+			dist_test_u | tee -a $INSTALL_LOG
 			## Osquery
 			config_osquery
 			## Syslog
@@ -184,8 +200,9 @@ while true; do
 			blumira_syslog_check
 			exit 0
 		elif [ $(echo $DIST | grep rhel| wc -m) -gt 0 ]; then
-				have_git
-				dist_test_r
+				have_git | tee -a $INSTALL_LOG
+				rsyslog_perms_check | tee -a $INSTALL_LOG
+				dist_test_r | tee -a $INSTALL_LOG
 				## Osquery
 				config_osquery
 				## Syslog
@@ -193,8 +210,9 @@ while true; do
 				blumira_syslog_check
 				exit 0
 		elif [ $(echo $DIST | grep centos| wc -m) -gt 0 ]; then
-				have_git
-				dist_test_c
+				have_git | tee -a $INSTALL_LOG
+				rsyslog_perms_check | tee -a $INSTALL_LOG
+				dist_test_c | tee -a $INSTALL_LOG
 				## Osquery
 				config_osquery
 				## Syslog
@@ -217,13 +235,15 @@ esac
 done
 
 ## Find Dist
-have_git
+have_git | tee -a $INSTALL_LOG
 
-dist_test_u
+rsyslog_perms_check | tee -a $INSTALL_LOG
 
-dist_test_r
+dist_test_u | tee -a $INSTALL_LOG
 
-dist_test_c
+dist_test_r | tee -a $INSTALL_LOG
+
+dist_test_c | tee -a $INSTALL_LOG
 
 ## Osquery
 
