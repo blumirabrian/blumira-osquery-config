@@ -121,7 +121,7 @@ EOF
 blumira_syslog_check(){
 
 if [ -f /etc/rsyslog.d/23-blumira.conf ];then
-	echo "Blumira Sensor Configuration Found"
+	echo "Blumira Sensor Configuration Found" | tee -a $INSTALL_LOG
 	sudo systemctl restart rsyslog.service
 else
 	blumira_content > /etc/rsyslog.d/23-blumira.conf
@@ -164,7 +164,6 @@ syslog_config(){
    
 syslog_content > /etc/rsyslog.d/osquery.conf
 sleep 5
-sudo chown syslog. /var/log/osquery/osqueryd.results.log
 sudo systemctl restart rsyslog.service
 
 }
