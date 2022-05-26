@@ -86,7 +86,7 @@ sudo cp -av osquery-configuration/Classic/Servers/Linux/* /etc/osquery/
 sudo chown -R root. /etc/osquery/
 
 echo "--logger_rotate=true" >> /etc/osquery/osquery.flags
-echo "--logger_rotate_size=52428800" >> /etc/osquery/osquery.flags
+echo "--logger_rotate_size=500000000" >> /etc/osquery/osquery.flags
 echo "--logger_rotate_max_files=3" >> /etc/osquery/osquery.flags
 
 sudo systemctl enable osqueryd.service
